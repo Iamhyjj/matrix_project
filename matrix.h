@@ -4,6 +4,7 @@
 #include<math.h>
 #define MAX_MATRIX_SIZE 500
 #define EPS 1e-10
+//this is for testing
 //NOTE:The result of any invalid operation will be an empty matrix(row=col=0,mat=NULL)
 typedef double element_type;       //The type of elements in the matrix is double,change the type here (print_matrix and input_matrix need adjusting accordingly)
 typedef struct matrix{
