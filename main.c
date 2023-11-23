@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include<assert.h>
 #include <stdlib.h>
+#include"matrix.h"
 //#define DEBUG
 void TestMatrixProductAbyB(){
 	matrix A,B,product,ans;
