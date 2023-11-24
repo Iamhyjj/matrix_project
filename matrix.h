@@ -4,7 +4,6 @@
 #include<math.h>
 #define MAX_MATRIX_SIZE 500
 #define EPS 1e-10
-//this is for testing
 //NOTE:The result of any invalid operation will be an empty matrix(row=col=0,mat=NULL)
 typedef double element_type;       //The type of elements in the matrix is double,change the type here (print_matrix and input_matrix need adjusting accordingly)
 typedef struct matrix{
@@ -18,7 +17,7 @@ matrix create_matrix(int row,int col){
 	int i;
 	matrix result;
 	if(row>MAX_MATRIX_SIZE||col>MAX_MATRIX_SIZE){
-		printf("Create matrix error:the number of rows(coloumns) of the matrix should be no more than 1000\n ");
+		printf("Create matrix error:the number of rows(coloumns) of the matrix should be no more than %d\n ",MAX_MATRIX_SIZE);
 		result.row=result.col=0;
 		result.mat=NULL;
 		return result;
@@ -49,6 +48,66 @@ matrix create_matrix(int row,int col){
 	return result;
 }
 
+//create a random matrix(rxc) whose elements(int type) are between two bounds 
+//still needs improving
+matrix create_random_matrix(int r,int c,int lower_bound,element_type upper_bound){
+	matrix result=create_matrix(r,c);
+	int i,j,len=upper_bound-lower_bound+1;
+	for(i=0;i<r;i++){
+		for(j=0;j<c;j++){
+			result.mat[i][j]=lower_bound+rand()%len;
+		}
+	}
+	return result;
+}
+
+matrix create_identity_matrix(int order){
+	matrix ret=create_matrix(order,order);
+	int i;
+	for(i=0;i<order;i++){
+		ret.mat[i][i]=1;
+	}
+	return ret;
+}
+
+void input_matrix(matrix m){
+	int j,i;
+	printf("Please input the matrix:\n");
+	for(i=0;i<m.row;i++){
+		for(j=0;j<m.col;j++){
+			scanf("%lf",&m.mat[i][j]);
+		}
+	}
+}
+//The value of every element in the entry array will be given to the matrix
+//if the length of the entry array is longer than row*col,then the excess elements in the array will be ignored
+//if the length of the entry array is shorter than row*col,then the remaining elements in the matrix will stay unchanged
+void enter_matrix(matrix m,element_type* entries,int len){
+	int i,j,k=0;
+	for(i=0;i<m.row;i++){
+		for(j=0;j<m.col;j++){
+			m.mat[i][j]=entries[k++];
+		}
+	}
+}
+
+//This sector still needs improving
+void print_matrix(matrix m){
+	if(m.col==0||m.row==0){
+		printf("This is an empty matrix\n");
+	}
+	else{
+	int j,i;
+	for(i=0;i<m.row;i++){
+		for(j=0;j<m.col;j++){
+			printf("%8.2lf",m.mat[i][j]+EPS);
+			}
+		printf("\n");
+	}
+	}
+}
+
+//two matrixes are equal only if:1The sizes of two matrixes are equal 2 EVERY element in them are equal
 int equal_matrix(matrix a,matrix b){
 	if(a.row!=b.row||a.col!=b.col){
 		return 0;
@@ -66,13 +125,16 @@ int equal_matrix(matrix a,matrix b){
 	return 1;
 }
 
-void FreeMatrix(matrix m){
+void free_matrix(matrix* m){
 	int i;
-	for(i=0;i<m.row;i++){
-		free(m.mat[i]);
+	for(i=0;i<(*m).row;i++){
+		free((*m).mat[i]);
 	}
-	free(m.mat);
+	free((*m).mat);
+	(*m).row=0;
+	(*m).col=0;
 }
+
 
 void SwapRow(matrix m,int r1,int r2){
 	element_type* temp;
@@ -92,27 +154,6 @@ void MultiplyRow(matrix m,int r, double k){
 	int i;
 	for(i=0;i<m.col;i++){
 		m.mat[r][i]*=k;
-	}
-}
-
-void input_matrix(matrix m){
-	int j,i;
-	printf("Please input the matrix:\n");
-	for(i=0;i<m.row;i++){
-		for(j=0;j<m.col;j++){
-			scanf("%lf",&m.mat[i][j]);
-		}
-	}
-}
-
-//This sector still needs improving
-void print_matrix(matrix m){
-	int j,i;
-	for(i=0;i<m.row;i++){
-		for(j=0;j<m.col;j++){
-			printf("%8.2lf",m.mat[i][j]+EPS);
-			}
-		printf("\n");
 	}
 }
 
@@ -176,7 +217,7 @@ matrix matrix_product(matrix a,matrix b){
 	return result;
 }
 
-//assume that n>=0
+//n must be no less than 0, or the result will be an empty matrix
 matrix matrix_pow(matrix m,int n){
 	if(m.row==0||m.col==0||m.row!=m.col||n<0){
 		return create_matrix(0,0);
@@ -239,7 +280,7 @@ int Rank(matrix m){
 			result++;
 		}
 	}
-	FreeMatrix(temp);
+	free_matrix(&temp);
 	return result;
 }
 
@@ -255,7 +296,7 @@ double Det(matrix m){
 		for(i=0;i<temp.row;i++){
 			result*=temp.mat[i][i];
 		}
-		FreeMatrix(temp);
+		free_matrix(&temp);
 	}
 	return result;
 }
@@ -289,7 +330,7 @@ matrix Inverse(matrix m){
 		}
 		return result;
 	}
-	FreeMatrix(temp);
+	free_matrix(&temp);
 	return result;
 }
 
@@ -318,13 +359,14 @@ matrix Solve(matrix m){
 		//result=create_matrix(m.row,m.row+1);
 		//for(i=0;i<m.row-rm;i++){
 		//	for(j=0;j<result.row;j++){
-		//		result.mat[j][i]=                  //unfinished here
+		//		result.mat[j][i]=                  //UNFINISHED HERE
 		//	}
 		//}
 		;	
 	}								//General solution+Particular solution
-	FreeMatrix(coefficient_matrix);
-	FreeMatrix(temp);
+	free_matrix(&coefficient_matrix);	
+	free_matrix(&temp);
 	return result;
 }
+
 
