@@ -1,6 +1,5 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include<assert.h>
 #include<math.h>
 #define MAX_MATRIX_SIZE 500
 #define EPS 1e-10
