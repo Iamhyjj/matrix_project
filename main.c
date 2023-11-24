@@ -166,7 +166,29 @@ void TestTranspose(){
 	m=create_matrix(2,3);
 	mt=Transpose(m);
 }
+void TestInverseMatrix(){
+	int i,j,order=3;
+	matrix m,err,im,ierr,identity_matrix;
+	element_type m_entries[]={2,3,5,7,11,13,17,19,23};
+	m=create_matrix(order,order);
+	enter_matrix(m,m_entries,order*order);
+	err=create_matrix(order,order-1);
+	identity_matrix=create_identity_matrix(order);
+	im=Inverse(m);
+	ierr=Inverse(err);
+	#ifdef DEBUG
+	  print_matrix(identity_matrix);
+	  printf("Rank(m)=%d\n",Rank(m));
+	  print_matrix(m);
+	  print_matrix(im);
+	#endif
+	assert(ierr.col==0);
+	assert(ierr.row==0);
+	assert(ierr.mat==NULL);
+	assert(equal_matrix(identity_matrix,matrix_product(m,im)));
+	printf("%s passed\n",__func__);
+}
 int main(int argc, char *argv[]) {
-	TestCreateMatrix();
-	return 0;
+    TestCreateMatrix();
+    return 0;
 }
