@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<assert.h>
 #include<math.h>
 #define MAX_MATRIX_SIZE 500
 #define EPS 1e-10
@@ -232,7 +233,7 @@ matrix matrix_pow(matrix m,int n){
 	}
 }
 
-matrix Triangle(matrix original_m){
+matrix GJ_elimination(matrix original_m){
 	int i,j;
 	matrix m=create_matrix(original_m.row,original_m.col);
 	for(i=0;i<original_m.row;i++){
@@ -244,7 +245,8 @@ matrix Triangle(matrix original_m){
 		j=i;
 		while(m.mat[i][i]==0&&j<m.row){
 			if(m.mat[j][i]){
-				SwapRow(m,i,j);      //make mat[i][i]!=0 
+				SwapRow(m,i,j);      //make mat[i][i]!=0
+				MultiplyRow(m,i,-1);//To hold the value of Det(m) 
 			}
 			j++;
 		}
@@ -262,7 +264,7 @@ matrix Triangle(matrix original_m){
 
 matrix standardize(matrix m){
 	int i,j;
-	matrix result=Triangle(m);
+	matrix result=GJ_elimination(m);
 	for(i=0;i<m.row&&i<m.col;i++){
 		if(result.mat[i][i]){
 		MultiplyRow(result,i,1/result.mat[i][i]);
@@ -291,7 +293,7 @@ double Det(matrix m){
 	else{
 		int i;
 		matrix temp;
-		temp=Triangle(m);
+		temp=GJ_elimination(m);
 		for(i=0;i<temp.row;i++){
 			result*=temp.mat[i][i];
 		}
@@ -367,5 +369,4 @@ matrix Solve(matrix m){
 	free_matrix(&temp);
 	return result;
 }
-
 
