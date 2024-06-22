@@ -28,8 +28,8 @@ and you will get a matrix type variant m:
    m.row=2;  
    m.col=3;  
    m.mat is showed as follow:  
-       0.0  0.0  0.0  
-       0.0  0.0  0.0  
+       0.0    0.0    0.0  
+       0.0    0.0    0.0  
 ### (2)create_identity_matrix(int order)  
    You can create an identity matrix of order n by using function create_identity_matrix()  
 for example:  
