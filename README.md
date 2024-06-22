@@ -9,8 +9,8 @@ typedef struct matrix{
 }matrix;  
 The default type of elements in the matrix are double  
 
-### ***Before started, there's something you should know:
-The result of ANY invalid matrix operation will be an empty matrix,namely:  
+### ***Before start, there's something you should know:
+The result of **ANY** invalid matrix operation will be an empty matrix,namely:  
     m.row=0,m.col=0,m.mat=NULL;  
 invalid matrix operations include but not limited to:  
 (1)Add two matrixes of different sizes  
